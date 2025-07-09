@@ -19,7 +19,7 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
-    font-size: 1.5vw;
+    font-size: 3.75vw; /* Responsive font size */
     padding: 10px 20px;
     border-radius: 10px;
     border: 2px solid white;
@@ -40,7 +40,7 @@ body {
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 2vw; /* Responsive font size */
+    font-size: 5vw; /* Responsive font size */
     color: white;
     background-color: rgba(0,0,0,0.5);
     padding: 10px;
@@ -51,7 +51,7 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 2vw; /* Responsive font size */
+    font-size: 5vw; /* Responsive font size */
     color: white;
     background-color: rgba(0,0,0,0.5);
     padding: 10px;

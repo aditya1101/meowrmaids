@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentMove = '';
     let score = 0;
     let gameMode = 'normal'; // 'normal' or 'freestyle'
+    let isActionInProgress = false;
 
     function goBackToMenu() {
         gameContainer.classList.add('hidden');
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.removeEventListener('keydown', handleKeyPress);
         playerCat.style.backgroundImage = "url('cat.png')";
         playerCat.style.animation = '';
+        isActionInProgress = false;
     }
 
     function startGame(mode) {
@@ -73,11 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleKeyPress(event) {
-        if (!moves.includes(event.key)) {
-            return; // Ignore non-arrow key presses
+        if (!moves.includes(event.key) || isActionInProgress) {
+            return; // Ignore non-arrow key presses or if an action is in progress
         }
         
         if (gameMode === 'normal') {
+            isActionInProgress = true;
             if (event.key === currentMove) {
                 score++;
                 updateScore();
@@ -87,21 +90,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
                 setTimeout(() => {
                     playerCat.style.backgroundImage = "url('cat.png')";
-                }, 500);
+                    displayInstruction();
+                    isActionInProgress = false;
+                }, 700); // Increased delay to allow reset
             } else {
                 incorrectSound.play();
                 // Add a visual cue for failure
                 playerCat.style.animation = 'shake 0.5s';
                 setTimeout(() => {
                     playerCat.style.animation = '';
-                }, 500);
+                    displayInstruction();
+                    isActionInProgress = false;
+                }, 700); // Increased delay to allow reset
             }
-            displayInstruction();
         } else { // Freestyle mode
+            isActionInProgress = true;
             const moveDirection = event.key.replace('Arrow', '').toLowerCase();
             playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
             setTimeout(() => {
                 playerCat.style.backgroundImage = "url('cat.png')";
+                isActionInProgress = false;
             }, 500);
         }
     }
