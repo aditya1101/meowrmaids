@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerCat = document.getElementById('player-cat');
     const scoreDisplay = document.getElementById('score');
 
+    const correctSound = new Audio('correct.mp3');
+    const incorrectSound = new Audio('incorrect.mp3');
+
     const moves = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
     const imagePaths = [
         'cat.png',
@@ -43,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.key === currentMove) {
             score++;
             updateScore();
+            correctSound.play();
             // Add a visual cue for success
             const moveDirection = currentMove.replace('Arrow', '').toLowerCase();
             playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
@@ -52,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerCat.style.backgroundImage = "url('cat.png')";
             }, 500);
         } else {
+            incorrectSound.play();
             // Add a visual cue for failure
             playerCat.style.animation = 'shake 0.5s';
             setTimeout(() => {
