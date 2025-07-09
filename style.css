@@ -40,11 +40,13 @@ body {
 
 #player-cat {
     position: absolute;
-    bottom: 10%; /* Position relative to screen height */
+    bottom: 0; /* Start from the bottom of the viewport */
     left: 50%;
     transform: translateX(-50%);
-    width: 10vh; /* Size relative to screen height */
-    height: 10vh; /* Size relative to screen height */
+    width: 20vh; /* Make the cat larger */
+    height: 20vh; /* Make the cat larger */
     background-image: url('cat.png');
-    background-size: cover;
+    background-size: contain; /* Use contain to see the whole cat */
+    background-repeat: no-repeat;
+    background-position: center;
 }
