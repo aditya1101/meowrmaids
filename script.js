@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const storyIntroContainer = document.getElementById('story-intro-container');
     const storyText = document.getElementById('story-text');
     const startDayBtn = document.getElementById('start-day-btn');
+    const statsContainer = document.getElementById('stats-container');
 
     const coachInstructions = document.getElementById('coach-instructions');
     const playerCat = document.getElementById('player-cat');
@@ -77,19 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
         gameMode = mode;
         menuContainer.classList.add('hidden');
         memoryOptionsContainer.classList.add('hidden');
+        gameContainer.classList.remove('hidden');
 
         if (gameMode === 'normal') {
-            gameContainer.classList.remove('hidden');
             displayInstruction();
         } else if (gameMode === 'freestyle') {
-            gameContainer.classList.remove('hidden');
             coachInstructions.textContent = "Freestyle Mode!";
         } else if (gameMode === 'memory') {
-            gameContainer.classList.remove('hidden');
             memorySequenceLength = parseInt(sequenceLengthInput.value, 10);
             startMemoryRound();
         } else if (gameMode === 'story') {
             currentDay = 1;
+            gameContainer.classList.add('hidden');
             showStoryIntro();
         }
         updateStats();
@@ -113,10 +113,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateStats() {
-        scoreDisplay.textContent = `Score: ${score}`;
-        if (gameMode === 'story') {
-            dayDisplay.textContent = `Day: ${currentDay}`;
+        mistakesDisplay.classList.add('hidden');
+        dayDisplay.classList.add('hidden');
+        scoreDisplay.classList.add('hidden');
+
+        if (gameMode === 'normal') {
+            scoreDisplay.classList.remove('hidden');
+            mistakesDisplay.classList.remove('hidden');
+            scoreDisplay.textContent = `Score: ${score}`;
             mistakesDisplay.textContent = `Mistakes: ${mistakes}`;
+        } else if (gameMode === 'freestyle') {
+            scoreDisplay.classList.remove('hidden');
+            scoreDisplay.textContent = `Score: ${score}`;
+        } else if (gameMode === 'memory') {
+            scoreDisplay.classList.remove('hidden');
+            mistakesDisplay.classList.remove('hidden');
+            scoreDisplay.textContent = `Score: ${score}`;
+            mistakesDisplay.textContent = `Mistakes: ${mistakes}`;
+        } else if (gameMode === 'story') {
+            scoreDisplay.classList.remove('hidden');
+            mistakesDisplay.classList.remove('hidden');
+            dayDisplay.classList.remove('hidden');
+            scoreDisplay.textContent = `Score: ${score} / 5`;
+            mistakesDisplay.textContent = `Mistakes: ${mistakes} / 3`;
+            dayDisplay.textContent = `Day: ${currentDay}`;
         }
     }
 
@@ -203,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
             isActionInProgress = true;
             if (event.key === currentMove) {
                 score++;
-                updateScore();
                 correctSound.play();
                 // Add a visual cue for success
                 const moveDirection = currentMove.replace('Arrow', '').toLowerCase();
@@ -214,6 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     isActionInProgress = false;
                 }, 700); // Increased delay to allow reset
             } else {
+                mistakes++;
                 incorrectSound.play();
                 // Add a visual cue for failure
                 playerCat.style.animation = 'shake 0.5s';
@@ -223,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     isActionInProgress = false;
                 }, 700); // Increased delay to allow reset
             }
+            updateStats();
         } else if (gameMode === 'freestyle') { // Freestyle mode
             isActionInProgress = true;
             const moveDirection = event.key.replace('Arrow', '').toLowerCase();
@@ -246,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Sequence correct
                     isActionInProgress = true;
                     score++;
-                    updateScore();
                     correctSound.play();
                     coachInstructions.textContent = 'Correct!';
                     setTimeout(startMemoryRound, 2000);
@@ -254,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Incorrect move
                 isActionInProgress = true;
+                mistakes++;
                 incorrectSound.play();
                 coachInstructions.textContent = 'Wrong move!';
                 playerCat.style.animation = 'shake 0.5s';
@@ -262,6 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     startMemoryRound();
                 }, 2000);
             }
+            updateStats();
         } else if (gameMode === 'story') {
             const moveDirection = event.key.replace('Arrow', '').toLowerCase();
             playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
