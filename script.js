@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const menuContainer = document.getElementById('menu-container');
+    const gameContainer = document.getElementById('game-container');
+    const playBtn = document.getElementById('play-btn');
+    const freestyleBtn = document.getElementById('freestyle-btn');
+
     const coachInstructions = document.getElementById('coach-instructions');
     const playerCat = document.getElementById('player-cat');
     const scoreDisplay = document.getElementById('score');
@@ -23,6 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentMove = '';
     let score = 0;
+    let gameMode = 'normal'; // 'normal' or 'freestyle'
+
+    function startGame(mode) {
+        gameMode = mode;
+        menuContainer.classList.add('hidden');
+        gameContainer.classList.remove('hidden');
+
+        if (gameMode === 'normal') {
+            displayInstruction();
+        } else {
+            coachInstructions.textContent = "Freestyle Mode!";
+        }
+        updateScore();
+        document.addEventListener('keydown', handleKeyPress);
+    }
+
+    playBtn.addEventListener('click', () => startGame('normal'));
+    freestyleBtn.addEventListener('click', () => startGame('freestyle'));
 
     function updateScore() {
         scoreDisplay.textContent = `Score: ${score}`;
@@ -43,33 +66,34 @@ document.addEventListener('DOMContentLoaded', () => {
             return; // Ignore non-arrow key presses
         }
         
-        if (event.key === currentMove) {
-            score++;
-            updateScore();
-            correctSound.play();
-            // Add a visual cue for success
-            const moveDirection = currentMove.replace('Arrow', '').toLowerCase();
+        if (gameMode === 'normal') {
+            if (event.key === currentMove) {
+                score++;
+                updateScore();
+                correctSound.play();
+                // Add a visual cue for success
+                const moveDirection = currentMove.replace('Arrow', '').toLowerCase();
+                playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
+                setTimeout(() => {
+                    playerCat.style.backgroundImage = "url('cat.png')";
+                }, 500);
+            } else {
+                incorrectSound.play();
+                // Add a visual cue for failure
+                playerCat.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    playerCat.style.animation = '';
+                }, 500);
+            }
+            displayInstruction();
+        } else { // Freestyle mode
+            const moveDirection = event.key.replace('Arrow', '').toLowerCase();
             playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
-            playerCat.style.transform = 'translateX(-50%) scale(1)';
             setTimeout(() => {
-                playerCat.style.transform = 'translateX(-50%) scale(1)';
                 playerCat.style.backgroundImage = "url('cat.png')";
             }, 500);
-        } else {
-            incorrectSound.play();
-            // Add a visual cue for failure
-            playerCat.style.animation = 'shake 0.5s';
-            setTimeout(() => {
-                playerCat.style.animation = '';
-            }, 500);
         }
-        displayInstruction();
     }
-
-    document.addEventListener('keydown', handleKeyPress);
-
-    displayInstruction();
-    updateScore();
 });
 
 // Add a shake animation for incorrect moves
