@@ -15,6 +15,26 @@ body {
     background-color: transparent;
 }
 
+#back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5vw;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid white;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    z-index: 10; /* Ensure it's above other elements */
+}
+
+#back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
 #coach-instructions {
     position: absolute;
     top: 10px;

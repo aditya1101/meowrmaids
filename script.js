@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameContainer = document.getElementById('game-container');
     const playBtn = document.getElementById('play-btn');
     const freestyleBtn = document.getElementById('freestyle-btn');
+    const backBtn = document.getElementById('back-btn');
 
     const coachInstructions = document.getElementById('coach-instructions');
     const playerCat = document.getElementById('player-cat');
@@ -30,7 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let gameMode = 'normal'; // 'normal' or 'freestyle'
 
+    function goBackToMenu() {
+        gameContainer.classList.add('hidden');
+        menuContainer.classList.remove('hidden');
+        document.removeEventListener('keydown', handleKeyPress);
+        playerCat.style.backgroundImage = "url('cat.png')";
+        playerCat.style.animation = '';
+    }
+
     function startGame(mode) {
+        score = 0;
         gameMode = mode;
         menuContainer.classList.add('hidden');
         gameContainer.classList.remove('hidden');
@@ -46,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     playBtn.addEventListener('click', () => startGame('normal'));
     freestyleBtn.addEventListener('click', () => startGame('freestyle'));
+    backBtn.addEventListener('click', goBackToMenu);
 
     function updateScore() {
         scoreDisplay.textContent = `Score: ${score}`;
