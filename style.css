@@ -210,3 +210,42 @@ body {
     background-color: rgba(255, 255, 255, 0.3);
     transform: scale(1.05);
 }
+
+#mistake-screen-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    z-index: 20;
+}
+
+#mistake-screen-container p {
+    font-size: 2vw;
+    margin-bottom: 30px;
+    max-width: 60%;
+}
+
+#mistake-screen-container button {
+    font-size: 1.5vw;
+    padding: 15px 30px;
+    margin: 10px;
+    border-radius: 10px;
+    border: 2px solid white;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#mistake-screen-container button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}

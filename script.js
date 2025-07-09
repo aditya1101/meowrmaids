@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const startDayBtn = document.getElementById('start-day-btn');
     const storyDayTitle = document.getElementById('story-day-title');
     const statsContainer = document.getElementById('stats-container');
+    const mistakeScreenContainer = document.getElementById('mistake-screen-container');
+    const restartDayBtn = document.getElementById('restart-day-btn');
+    const bribeCoachBtn = document.getElementById('bribe-coach-btn');
 
     const coachInstructions = document.getElementById('coach-instructions');
     const playerCat = document.getElementById('player-cat');
@@ -51,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let mistakes = 0;
 
     const storyTexts = [
-        "Chicks Malone, a cat with a dream, wants to join the Meowrmaids Synchronized Swimming team. First, he must prove he can follow basic instructions. Let's see if he has what it takes!",
+        "Chicks Malone, a cat who has always dreamed of going to the Olympics, wants to join the Meowrmaids Synchronized Swimming team. First, he must prove he can follow basic instructions. Let's see if he has what it takes!",
         "Impressive! Chicks passed the first day. But the routines are getting harder. Today's sequences are longer. Can he keep up?",
         "Chicks is showing real promise! The coaches are watching him closely. The pressure is on to master even more complex moves.",
         "Halfway there! Chicks is becoming a local celebrity. But fame brings pressure. The routines are now twice as long as when he started.",
@@ -112,6 +115,20 @@ document.addEventListener('DOMContentLoaded', () => {
         gameContainer.classList.remove('hidden');
         startDay();
     });
+    restartDayBtn.addEventListener('click', () => {
+        mistakeScreenContainer.classList.add('hidden');
+        startDay();
+    });
+    bribeCoachBtn.addEventListener('click', () => {
+        mistakeScreenContainer.classList.add('hidden');
+        currentDay++;
+        if (currentDay > 7) {
+            coachInstructions.textContent = 'Chicks is a Meowrmaid!';
+            setTimeout(goBackToMenu, 3000);
+        } else {
+            showStoryIntro();
+        }
+    });
 
     function updateStats() {
         mistakesDisplay.classList.add('hidden');
@@ -168,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isActionInProgress = true;
         coachInstructions.textContent = 'Watch carefully...';
         memorySequence = [];
-        const sequenceLength = currentDay + 2;
+        const sequenceLength = currentDay + 1;
         for (let i = 0; i < sequenceLength; i++) {
             memorySequence.push(getNextMove());
         }
@@ -209,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         displayMemorySequence(index + 1);
                     }
                 }, 200); // Brief pause between moves
-            }, 1000);
+            }, 800);
         } else {
             coachInstructions.textContent = 'Your turn!';
             isActionInProgress = false;
@@ -329,12 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 incorrectSound.play();
                 
                 if (mistakes >= 3) {
-                    coachInstructions.textContent = 'Too many mistakes. Try again!';
-                    playerCat.style.animation = 'shake 0.5s';
-                    setTimeout(() => {
-                        playerCat.style.animation = '';
-                        startDay();
-                    }, 2000);
+                    gameContainer.classList.add('hidden');
+                    mistakeScreenContainer.classList.remove('hidden');
                 } else {
                     coachInstructions.textContent = 'Wrong move!';
                     playerCat.style.animation = 'shake 0.5s';
