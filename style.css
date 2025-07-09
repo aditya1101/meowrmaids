@@ -106,6 +106,64 @@ body {
     transform: scale(1.05);
 }
 
+#stats-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+#stats-container div {
+    font-size: 2.5vw;
+    margin-bottom: 5px;
+}
+
+#story-intro-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#story-intro-container p {
+    font-size: 3vw;
+    max-width: 80%;
+    margin-bottom: 20px;
+}
+
+#story-intro-container button {
+    font-size: 2vw;
+    padding: 15px 30px;
+    border-radius: 10px;
+    border: 2px solid white;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#story-intro-container button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
 #memory-options-container {
     width: 100vw;
     height: 100vh;

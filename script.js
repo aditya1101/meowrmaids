@@ -9,10 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const sequenceLengthInput = document.getElementById('sequence-length');
     const startMemoryBtn = document.getElementById('start-memory-btn');
     const backToMenuFromMemoryOptionsBtn = document.getElementById('back-to-menu-from-memory-options-btn');
+    const storyBtn = document.getElementById('story-btn');
+    const storyIntroContainer = document.getElementById('story-intro-container');
+    const storyText = document.getElementById('story-text');
+    const startDayBtn = document.getElementById('start-day-btn');
 
     const coachInstructions = document.getElementById('coach-instructions');
     const playerCat = document.getElementById('player-cat');
     const scoreDisplay = document.getElementById('score');
+    const dayDisplay = document.getElementById('day-display');
+    const mistakesDisplay = document.getElementById('mistakes-display');
 
     const correctSound = new Audio('correct.mp3');
     const incorrectSound = new Audio('incorrect.mp3');
@@ -39,10 +45,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let memorySequence = [];
     let playerSequence = [];
     let memorySequenceLength = 3;
+    let currentDay = 1;
+    let mistakes = 0;
+
+    const storyTexts = [
+        "Day 1: Chicks Malone, a cat with a dream, wants to join the Meowrmaids Synchronized Swimming team. First, he must prove he can follow basic instructions. Let's see if he has what it takes!",
+        "Day 2: Impressive! Chicks passed the first day. But the routines are getting harder. Today's sequences are longer. Can he keep up?",
+        "Day 3: Chicks is showing real promise! The coaches are watching him closely. The pressure is on to master even more complex moves.",
+        "Day 4: Halfway there! Chicks is becoming a local celebrity. But fame brings pressure. The routines are now twice as long as when he started.",
+        "Day 5: The Meowrmaids have invited Chicks to a special practice. He needs to be flawless to impress the team captain.",
+        "Day 6: The final tryouts are tomorrow. Today is all about endurance and focus. The sequences are long and grueling.",
+        "Day 7: This is it! The final day of tryouts. Chicks Malone is on the verge of making his Olympic dream a reality. He has to perform the longest sequence yet. Good luck, Chicks!"
+    ];
 
     function goBackToMenu() {
         gameContainer.classList.add('hidden');
         memoryOptionsContainer.classList.add('hidden');
+        storyIntroContainer.classList.add('hidden');
         menuContainer.classList.remove('hidden');
         document.removeEventListener('keydown', handleKeyPress);
         playerCat.style.backgroundImage = "url('cat.png')";
@@ -54,25 +73,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startGame(mode) {
         score = 0;
+        mistakes = 0;
         gameMode = mode;
         menuContainer.classList.add('hidden');
-        gameContainer.classList.remove('hidden');
         memoryOptionsContainer.classList.add('hidden');
 
         if (gameMode === 'normal') {
+            gameContainer.classList.remove('hidden');
             displayInstruction();
         } else if (gameMode === 'freestyle') {
+            gameContainer.classList.remove('hidden');
             coachInstructions.textContent = "Freestyle Mode!";
         } else if (gameMode === 'memory') {
+            gameContainer.classList.remove('hidden');
             memorySequenceLength = parseInt(sequenceLengthInput.value, 10);
             startMemoryRound();
+        } else if (gameMode === 'story') {
+            currentDay = 1;
+            showStoryIntro();
         }
-        updateScore();
+        updateStats();
         document.addEventListener('keydown', handleKeyPress);
     }
 
     playBtn.addEventListener('click', () => startGame('normal'));
     freestyleBtn.addEventListener('click', () => startGame('freestyle'));
+    storyBtn.addEventListener('click', () => startGame('story'));
     memoryBtn.addEventListener('click', () => {
         menuContainer.classList.add('hidden');
         memoryOptionsContainer.classList.remove('hidden');
@@ -80,9 +106,18 @@ document.addEventListener('DOMContentLoaded', () => {
     backBtn.addEventListener('click', goBackToMenu);
     startMemoryBtn.addEventListener('click', () => startGame('memory'));
     backToMenuFromMemoryOptionsBtn.addEventListener('click', goBackToMenu);
+    startDayBtn.addEventListener('click', () => {
+        storyIntroContainer.classList.add('hidden');
+        gameContainer.classList.remove('hidden');
+        startDay();
+    });
 
-    function updateScore() {
+    function updateStats() {
         scoreDisplay.textContent = `Score: ${score}`;
+        if (gameMode === 'story') {
+            dayDisplay.textContent = `Day: ${currentDay}`;
+            mistakesDisplay.textContent = `Mistakes: ${mistakes}`;
+        }
     }
 
     function getNextMove() {
@@ -93,6 +128,33 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayInstruction() {
         currentMove = getNextMove();
         coachInstructions.textContent = `Coach: ${currentMove.replace('Arrow', '')}!`;
+    }
+
+    function showStoryIntro() {
+        storyText.textContent = storyTexts[currentDay - 1];
+        storyIntroContainer.classList.remove('hidden');
+    }
+
+    function startDay() {
+        score = 0;
+        mistakes = 0;
+        updateStats();
+        startStoryRound();
+    }
+
+    function startStoryRound() {
+        isActionInProgress = true;
+        coachInstructions.textContent = 'Watch carefully...';
+        memorySequence = [];
+        const sequenceLength = currentDay + 2;
+        for (let i = 0; i < sequenceLength; i++) {
+            memorySequence.push(getNextMove());
+        }
+        playerSequence = [];
+
+        setTimeout(() => {
+            displayMemorySequence(0);
+        }, 1000);
     }
 
     function startMemoryRound() {
@@ -118,7 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 playerCat.style.backgroundImage = "url('cat.png')";
                 setTimeout(() => {
-                    displayMemorySequence(index + 1);
+                    if (gameMode === 'story' && index + 1 >= memorySequence.length) {
+                        coachInstructions.textContent = 'Your turn!';
+                        isActionInProgress = false;
+                    } else {
+                        displayMemorySequence(index + 1);
+                    }
                 }, 200); // Brief pause between moves
             }, 1000);
         } else {
@@ -194,6 +261,64 @@ document.addEventListener('DOMContentLoaded', () => {
                     playerCat.style.animation = '';
                     startMemoryRound();
                 }, 2000);
+            }
+        } else if (gameMode === 'story') {
+            const moveDirection = event.key.replace('Arrow', '').toLowerCase();
+            playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
+            setTimeout(() => {
+                playerCat.style.backgroundImage = "url('cat.png')";
+            }, 200);
+
+            const currentMoveIndex = playerSequence.length;
+            if (event.key === memorySequence[currentMoveIndex]) {
+                playerSequence.push(event.key);
+
+                if (playerSequence.length === memorySequence.length) {
+                    // Sequence correct
+                    isActionInProgress = true;
+                    score++;
+                    updateStats();
+                    correctSound.play();
+                    
+                    if (score >= 5) {
+                        currentDay++;
+                        if (currentDay > 7) {
+                            coachInstructions.textContent = 'Chicks is a Meowrmaid!';
+                            setTimeout(goBackToMenu, 3000);
+                        } else {
+                            coachInstructions.textContent = 'Day Complete!';
+                            setTimeout(() => {
+                                gameContainer.classList.add('hidden');
+                                showStoryIntro();
+                            }, 2000);
+                        }
+                    } else {
+                        coachInstructions.textContent = 'Correct!';
+                        setTimeout(startStoryRound, 2000);
+                    }
+                }
+            } else {
+                // Incorrect move
+                isActionInProgress = true;
+                mistakes++;
+                updateStats();
+                incorrectSound.play();
+                
+                if (mistakes >= 3) {
+                    coachInstructions.textContent = 'Too many mistakes. Try again!';
+                    playerCat.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        playerCat.style.animation = '';
+                        startDay();
+                    }, 2000);
+                } else {
+                    coachInstructions.textContent = 'Wrong move!';
+                    playerCat.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        playerCat.style.animation = '';
+                        startStoryRound();
+                    }, 2000);
+                }
             }
         }
     }

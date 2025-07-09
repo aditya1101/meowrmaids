@@ -10,10 +10,15 @@
         <button id="play-btn">Play</button>
         <button id="freestyle-btn">Freestyle</button>
         <button id="memory-btn">Memory</button>
+        <button id="story-btn">Story Mode</button>
     </div>
     <div id="game-container" class="hidden">
         <button id="back-btn">Back to Menu</button>
-        <div id="score">Score: 0</div>
+        <div id="stats-container">
+            <div id="score">Score: 0</div>
+            <div id="day-display">Day: 1</div>
+            <div id="mistakes-display">Mistakes: 0</div>
+        </div>
         <div id="coach-instructions">Coach: Up!</div>
         <div id="player-cat"></div>
     </div>
@@ -23,6 +28,11 @@
         <input type="number" id="sequence-length" value="3" min="1" max="10">
         <button id="start-memory-btn">Start Game</button>
         <button id="back-to-menu-from-memory-options-btn">Back to Menu</button>
+    </div>
+
+    <div id="story-intro-container" class="hidden">
+        <p id="story-text"></p>
+        <button id="start-day-btn">Start Day</button>
     </div>
 
     <script src="script.js"></script>
