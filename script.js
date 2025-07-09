@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add a visual cue for success
             const moveDirection = currentMove.replace('Arrow', '').toLowerCase();
             playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
-            playerCat.style.transform = 'translateX(-50%) scale(1.2)';
+            playerCat.style.transform = 'translateX(-50%) scale(1)';
             setTimeout(() => {
                 playerCat.style.transform = 'translateX(-50%) scale(1)';
                 playerCat.style.backgroundImage = "url('cat.png')";
