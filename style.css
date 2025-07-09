@@ -178,14 +178,21 @@ body {
     text-align: center;
     background-color: rgba(0, 0, 0, 0.8);
     padding: 40px;
-    border-radius: 15px;
-    max-width: 60%;
+    box-sizing: border-box; /* Ensure padding is included in the dimensions */
+}
+
+#story-day-title {
+    font-size: 4vw;
+    color: white;
+    margin-bottom: 20px;
 }
 
 #story-intro-container p {
     font-size: 1.8vw;
     color: white;
     margin-bottom: 20px;
+    max-width: 60%; /* Keep text from stretching too wide */
+    line-height: 1.5;
 }
 
 #story-intro-container button {

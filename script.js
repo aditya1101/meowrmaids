@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const storyIntroContainer = document.getElementById('story-intro-container');
     const storyText = document.getElementById('story-text');
     const startDayBtn = document.getElementById('start-day-btn');
+    const storyDayTitle = document.getElementById('story-day-title');
     const statsContainer = document.getElementById('stats-container');
 
     const coachInstructions = document.getElementById('coach-instructions');
@@ -50,13 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let mistakes = 0;
 
     const storyTexts = [
-        "Day 1: Chicks Malone, a cat with a dream, wants to join the Meowrmaids Synchronized Swimming team. First, he must prove he can follow basic instructions. Let's see if he has what it takes!",
-        "Day 2: Impressive! Chicks passed the first day. But the routines are getting harder. Today's sequences are longer. Can he keep up?",
-        "Day 3: Chicks is showing real promise! The coaches are watching him closely. The pressure is on to master even more complex moves.",
-        "Day 4: Halfway there! Chicks is becoming a local celebrity. But fame brings pressure. The routines are now twice as long as when he started.",
-        "Day 5: The Meowrmaids have invited Chicks to a special practice. He needs to be flawless to impress the team captain.",
-        "Day 6: The final tryouts are tomorrow. Today is all about endurance and focus. The sequences are long and grueling.",
-        "Day 7: This is it! The final day of tryouts. Chicks Malone is on the verge of making his Olympic dream a reality. He has to perform the longest sequence yet. Good luck, Chicks!"
+        "Chicks Malone, a cat with a dream, wants to join the Meowrmaids Synchronized Swimming team. First, he must prove he can follow basic instructions. Let's see if he has what it takes!",
+        "Impressive! Chicks passed the first day. But the routines are getting harder. Today's sequences are longer. Can he keep up?",
+        "Chicks is showing real promise! The coaches are watching him closely. The pressure is on to master even more complex moves.",
+        "Halfway there! Chicks is becoming a local celebrity. But fame brings pressure. The routines are now twice as long as when he started.",
+        "The Meowrmaids have invited Chicks to a special practice. He needs to be flawless to impress the team captain.",
+        "The final tryouts are tomorrow. Today is all about endurance and focus. The sequences are long and grueling.",
+        "This is it! The final day of tryouts. Chicks Malone is on the verge of making his Olympic dream a reality. He has to perform the longest sequence yet. Good luck, Chicks!"
     ];
 
     function goBackToMenu() {
@@ -134,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             scoreDisplay.classList.remove('hidden');
             mistakesDisplay.classList.remove('hidden');
             dayDisplay.classList.remove('hidden');
-            scoreDisplay.textContent = `Score: ${score} / 5`;
+            scoreDisplay.textContent = `Score: ${score} / 3`;
             mistakesDisplay.textContent = `Mistakes: ${mistakes} / 3`;
             dayDisplay.textContent = `Day: ${currentDay}`;
         }
@@ -151,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showStoryIntro() {
+        storyDayTitle.textContent = `Day ${currentDay}`;
         storyText.textContent = storyTexts[currentDay - 1];
         storyIntroContainer.classList.remove('hidden');
     }
@@ -302,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateStats();
                     correctSound.play();
                     
-                    if (score >= 5) {
+                    if (score >= 3) {
                         currentDay++;
                         if (currentDay > 7) {
                             coachInstructions.textContent = 'Chicks is a Meowrmaid!';
