@@ -12,11 +12,19 @@
         <button id="memory-btn">Memory</button>
     </div>
     <div id="game-container" class="hidden">
-        <button id="back-btn">Back</button>
-        <div id="coach-instructions"></div>
+        <button id="back-btn">Back to Menu</button>
         <div id="score">Score: 0</div>
+        <div id="coach-instructions">Coach: Up!</div>
         <div id="player-cat"></div>
     </div>
+
+    <div id="memory-options-container" class="hidden">
+        <h2>Set Memory Sequence Length</h2>
+        <input type="number" id="sequence-length" value="3" min="1" max="10">
+        <button id="start-memory-btn">Start Game</button>
+        <button id="back-to-menu-from-memory-options-btn">Back to Menu</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

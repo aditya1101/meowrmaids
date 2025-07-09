@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const freestyleBtn = document.getElementById('freestyle-btn');
     const memoryBtn = document.getElementById('memory-btn');
     const backBtn = document.getElementById('back-btn');
+    const memoryOptionsContainer = document.getElementById('memory-options-container');
+    const sequenceLengthInput = document.getElementById('sequence-length');
+    const startMemoryBtn = document.getElementById('start-memory-btn');
+    const backToMenuFromMemoryOptionsBtn = document.getElementById('back-to-menu-from-memory-options-btn');
 
     const coachInstructions = document.getElementById('coach-instructions');
     const playerCat = document.getElementById('player-cat');
@@ -34,9 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let isActionInProgress = false;
     let memorySequence = [];
     let playerSequence = [];
+    let memorySequenceLength = 3;
 
     function goBackToMenu() {
         gameContainer.classList.add('hidden');
+        memoryOptionsContainer.classList.add('hidden');
         menuContainer.classList.remove('hidden');
         document.removeEventListener('keydown', handleKeyPress);
         playerCat.style.backgroundImage = "url('cat.png')";
@@ -51,12 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
         gameMode = mode;
         menuContainer.classList.add('hidden');
         gameContainer.classList.remove('hidden');
+        memoryOptionsContainer.classList.add('hidden');
 
         if (gameMode === 'normal') {
             displayInstruction();
         } else if (gameMode === 'freestyle') {
             coachInstructions.textContent = "Freestyle Mode!";
         } else if (gameMode === 'memory') {
+            memorySequenceLength = parseInt(sequenceLengthInput.value, 10);
             startMemoryRound();
         }
         updateScore();
@@ -65,8 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     playBtn.addEventListener('click', () => startGame('normal'));
     freestyleBtn.addEventListener('click', () => startGame('freestyle'));
-    memoryBtn.addEventListener('click', () => startGame('memory'));
+    memoryBtn.addEventListener('click', () => {
+        menuContainer.classList.add('hidden');
+        memoryOptionsContainer.classList.remove('hidden');
+    });
     backBtn.addEventListener('click', goBackToMenu);
+    startMemoryBtn.addEventListener('click', () => startGame('memory'));
+    backToMenuFromMemoryOptionsBtn.addEventListener('click', goBackToMenu);
 
     function updateScore() {
         scoreDisplay.textContent = `Score: ${score}`;
@@ -85,7 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function startMemoryRound() {
         isActionInProgress = true;
         coachInstructions.textContent = 'Watch carefully...';
-        memorySequence = [getNextMove(), getNextMove(), getNextMove()];
+        memorySequence = [];
+        for (let i = 0; i < memorySequenceLength; i++) {
+            memorySequence.push(getNextMove());
+        }
         playerSequence = [];
 
         setTimeout(() => {
@@ -109,29 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             coachInstructions.textContent = 'Your turn!';
             isActionInProgress = false;
         }
-    }
-
-    function checkMemorySequence() {
-        isActionInProgress = true;
-        let correct = true;
-        for (let i = 0; i < memorySequence.length; i++) {
-            if (memorySequence[i] !== playerSequence[i]) {
-                correct = false;
-                break;
-            }
-        }
-
-        if (correct) {
-            score++;
-            updateScore();
-            correctSound.play();
-            coachInstructions.textContent = 'Correct!';
-        } else {
-            incorrectSound.play();
-            coachInstructions.textContent = 'Wrong sequence!';
-        }
-
-        setTimeout(startMemoryRound, 2000);
     }
 
     function handleKeyPress(event) {
@@ -178,10 +171,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerCat.style.backgroundImage = "url('cat.png')";
             }, 200);
 
-            playerSequence.push(event.key);
+            const currentMoveIndex = playerSequence.length;
+            if (event.key === memorySequence[currentMoveIndex]) {
+                playerSequence.push(event.key);
 
-            if (playerSequence.length === memorySequence.length) {
-                checkMemorySequence();
+                if (playerSequence.length === memorySequence.length) {
+                    // Sequence correct
+                    isActionInProgress = true;
+                    score++;
+                    updateScore();
+                    correctSound.play();
+                    coachInstructions.textContent = 'Correct!';
+                    setTimeout(startMemoryRound, 2000);
+                }
+            } else {
+                // Incorrect move
+                isActionInProgress = true;
+                incorrectSound.play();
+                coachInstructions.textContent = 'Wrong move!';
+                playerCat.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    playerCat.style.animation = '';
+                    startMemoryRound();
+                }, 2000);
             }
         }
     }
