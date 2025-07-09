@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleKeyPress(event) {
+        if (!moves.includes(event.key)) {
+            return; // Ignore non-arrow key presses
+        }
+        
         if (event.key === currentMove) {
             score++;
             updateScore();
