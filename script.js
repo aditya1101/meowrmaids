@@ -4,6 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreDisplay = document.getElementById('score');
 
     const moves = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+    const imagePaths = [
+        'cat.png',
+        'cat_up.png',
+        'cat_down.png',
+        'cat_left.png',
+        'cat_right.png'
+    ];
+
+    // Preload images to prevent flickering
+    imagePaths.forEach(path => {
+        const img = new Image();
+        img.src = path;
+    });
+
     let currentMove = '';
     let score = 0;
 
