@@ -26,10 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
             score++;
             updateScore();
             // Add a visual cue for success
+            const moveDirection = currentMove.replace('Arrow', '').toLowerCase();
+            playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
             playerCat.style.transform = 'scale(1.2)';
             setTimeout(() => {
                 playerCat.style.transform = 'scale(1)';
-            }, 200);
+                playerCat.style.backgroundImage = "url('cat.png')";
+            }, 500);
         } else {
             // Add a visual cue for failure
             playerCat.style.animation = 'shake 0.5s';
