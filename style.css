@@ -1,5 +1,8 @@
 body {
-    background-color: #add8e6;
+    background-image: url('background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
@@ -13,7 +16,7 @@ body {
     width: 800px;
     height: 600px;
     position: relative;
-    background-color: #0000cd;
+    background-color: transparent;
 }
 
 #coach-instructions {
