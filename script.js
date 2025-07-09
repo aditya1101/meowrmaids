@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameContainer = document.getElementById('game-container');
     const playBtn = document.getElementById('play-btn');
     const freestyleBtn = document.getElementById('freestyle-btn');
+    const memoryBtn = document.getElementById('memory-btn');
     const backBtn = document.getElementById('back-btn');
 
     const coachInstructions = document.getElementById('coach-instructions');
@@ -29,8 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentMove = '';
     let score = 0;
-    let gameMode = 'normal'; // 'normal' or 'freestyle'
+    let gameMode = 'normal'; // 'normal', 'freestyle', or 'memory'
     let isActionInProgress = false;
+    let memorySequence = [];
+    let playerSequence = [];
 
     function goBackToMenu() {
         gameContainer.classList.add('hidden');
@@ -39,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playerCat.style.backgroundImage = "url('cat.png')";
         playerCat.style.animation = '';
         isActionInProgress = false;
+        memorySequence = [];
+        playerSequence = [];
     }
 
     function startGame(mode) {
@@ -49,8 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (gameMode === 'normal') {
             displayInstruction();
-        } else {
+        } else if (gameMode === 'freestyle') {
             coachInstructions.textContent = "Freestyle Mode!";
+        } else if (gameMode === 'memory') {
+            startMemoryRound();
         }
         updateScore();
         document.addEventListener('keydown', handleKeyPress);
@@ -58,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     playBtn.addEventListener('click', () => startGame('normal'));
     freestyleBtn.addEventListener('click', () => startGame('freestyle'));
+    memoryBtn.addEventListener('click', () => startGame('memory'));
     backBtn.addEventListener('click', goBackToMenu);
 
     function updateScore() {
@@ -72,6 +80,58 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayInstruction() {
         currentMove = getNextMove();
         coachInstructions.textContent = `Coach: ${currentMove.replace('Arrow', '')}!`;
+    }
+
+    function startMemoryRound() {
+        isActionInProgress = true;
+        coachInstructions.textContent = 'Watch carefully...';
+        memorySequence = [getNextMove(), getNextMove(), getNextMove()];
+        playerSequence = [];
+
+        setTimeout(() => {
+            displayMemorySequence(0);
+        }, 1000);
+    }
+
+    function displayMemorySequence(index) {
+        if (index < memorySequence.length) {
+            const move = memorySequence[index];
+            coachInstructions.textContent = move.replace('Arrow', '');
+            const moveDirection = move.replace('Arrow', '').toLowerCase();
+            playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
+            setTimeout(() => {
+                playerCat.style.backgroundImage = "url('cat.png')";
+                setTimeout(() => {
+                    displayMemorySequence(index + 1);
+                }, 200); // Brief pause between moves
+            }, 1000);
+        } else {
+            coachInstructions.textContent = 'Your turn!';
+            isActionInProgress = false;
+        }
+    }
+
+    function checkMemorySequence() {
+        isActionInProgress = true;
+        let correct = true;
+        for (let i = 0; i < memorySequence.length; i++) {
+            if (memorySequence[i] !== playerSequence[i]) {
+                correct = false;
+                break;
+            }
+        }
+
+        if (correct) {
+            score++;
+            updateScore();
+            correctSound.play();
+            coachInstructions.textContent = 'Correct!';
+        } else {
+            incorrectSound.play();
+            coachInstructions.textContent = 'Wrong sequence!';
+        }
+
+        setTimeout(startMemoryRound, 2000);
     }
 
     function handleKeyPress(event) {
@@ -103,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     isActionInProgress = false;
                 }, 700); // Increased delay to allow reset
             }
-        } else { // Freestyle mode
+        } else if (gameMode === 'freestyle') { // Freestyle mode
             isActionInProgress = true;
             const moveDirection = event.key.replace('Arrow', '').toLowerCase();
             playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
@@ -111,6 +171,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerCat.style.backgroundImage = "url('cat.png')";
                 isActionInProgress = false;
             }, 500);
+        } else if (gameMode === 'memory') {
+            const moveDirection = event.key.replace('Arrow', '').toLowerCase();
+            playerCat.style.backgroundImage = `url('cat_${moveDirection}.png')`;
+            setTimeout(() => {
+                playerCat.style.backgroundImage = "url('cat.png')";
+            }, 200);
+
+            playerSequence.push(event.key);
+
+            if (playerSequence.length === memorySequence.length) {
+                checkMemorySequence();
+            }
         }
     }
 });
